@@ -1,18 +1,18 @@
-// Challenge Checklist – lightweight engine with persistence
+// Challenge Checklist – engine with persistent progress and robust event handling
 
 const el  = s => document.querySelector(s);
 const els = s => [...document.querySelectorAll(s)];
 
-const $cats        = el('#categories');
-const $tasksDone   = el('#tasksDone');
-const $pointsTotal = el('#pointsTotal');
-const $checkAll    = el('#checkAll');
-const $settings    = el('#settings');
-const $openSettings= el('#openSettings');
-const $excludeWrap = el('#excludeWrap');
-const $difficulty  = el('#difficulty');
-const $mode        = el('#mode');
-const $reset       = el('#resetProgress');
+const $cats         = el('#categories');
+const $tasksDone    = el('#tasksDone');
+const $pointsTotal  = el('#pointsTotal');
+const $checkAll     = el('#checkAll');
+const $settings     = el('#settings');
+const $openSettings = el('#openSettings');
+const $excludeWrap  = el('#excludeWrap');
+const $difficulty   = el('#difficulty');
+const $mode         = el('#mode');
+const $reset        = el('#resetProgress');
 
 const STORE_KEY    = 'checklist-progress-v1';
 const SETTINGS_KEY = 'checklist-settings-v1';
@@ -24,22 +24,33 @@ let settings = Object.assign(
   JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')
 );
 
-// Bind once to avoid duplicate listeners when re-rendering
+// Bind once so we don't double-handle events after re-render
 let listBound = false;
+
 function onChecklistChange(e) {
-  if (!e.target.matches('input[type="checkbox"][data-task]')) return;
-  const id = e.target.dataset.task;
-  if (e.target.checked) progress[id] = true;
-  else delete progress[id];
+  // Be robust to clicks on label/spans: find the actual checkbox
+  const cb = e.target.closest('input[type="checkbox"][data-task]');
+  if (!cb) return;
+
+  const id = cb.dataset.task;
+  if (cb.checked) {
+    progress[id] = true;
+  } else {
+    delete progress[id];
+  }
   persistProgress();
-  updateTotals();
-  updatePerCategoryCounts();
+
+  // Update after state settles (avoids racey UI reads)
+  requestAnimationFrame(() => {
+    updateTotals();
+    updatePerCategoryCounts();
+  });
 }
 
 async function load() {
   DATA = await fetch('tasks.json').then(r => r.json());
 
-  // Build exclude toggles
+  // Build exclude toggles from categories
   $excludeWrap.innerHTML = DATA.categories.map(c =>
     `<label class="toggle">
        <input type="checkbox" data-exclude="${c.id}" ${settings.excluded[c.id] ? 'checked':''}/>
@@ -64,10 +75,11 @@ function bindEvents() {
   $settings.addEventListener('close', persistSettings);
 
   $excludeWrap.addEventListener('change', e => {
-    if (!e.target.matches('[data-exclude]')) return;
-    settings.excluded[e.target.dataset.exclude] = e.target.checked;
+    const t = e.target;
+    if (!t.matches('[data-exclude]')) return;
+    settings.excluded[t.dataset.exclude] = t.checked;
     persistSettings();
-    render();
+    render(); // re-render to hide/show categories
   });
 
   $difficulty.onchange = () => {
@@ -75,6 +87,7 @@ function bindEvents() {
     persistSettings();
     updateTotals();
   };
+
   $mode.onchange = () => {
     settings.mode = $mode.value;
     persistSettings();
@@ -83,7 +96,7 @@ function bindEvents() {
   $reset.onclick = () => {
     progress = {};
     localStorage.removeItem(STORE_KEY);
-    els('input[type="checkbox"][data-task]').forEach(cb => cb.checked = false);
+    els('input[type="checkbox"][data-task]').forEach(cb => (cb.checked = false));
     updateTotals();
     updatePerCategoryCounts();
   };
@@ -127,7 +140,7 @@ function render() {
       row.className = 'task';
       row.innerHTML = `
         <label>
-          <input type="checkbox" data-task="${t.id}" ${checked ? 'checked':''}/>
+          <input type="checkbox" data-task="${t.id}" ${checked ? 'checked' : ''}/>
           <span>${t.label}</span>
           <span class="pts">${t.points} pts</span>
         </label>
