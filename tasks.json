@@ -1,0 +1,38 @@
+{
+  "categories": [
+    {
+      "id": "health",
+      "title": "Health & Fitness",
+      "tasks": [
+        { "id": "walk5k", "label": "Walk 5,000 steps", "points": 1 },
+        { "id": "pushups20", "label": "Do 20 push-ups", "points": 2 },
+        { "id": "hydrate", "label": "Drink 8 glasses of water", "points": 2 },
+        { "id": "workout30", "label": "30-minute workout", "points": 3 }
+      ]
+    },
+    {
+      "id": "productivity",
+      "title": "Productivity & Learning",
+      "tasks": [
+        { "id": "read10", "label": "Read 10 pages", "points": 2 },
+        { "id": "study30", "label": "Study 30 minutes", "points": 2 },
+        { "id": "inbox0", "label": "Process inbox to zero", "points": 3 }
+      ]
+    },
+    {
+      "id": "selfcare",
+      "title": "Self-Care",
+      "tasks": [
+        { "id": "meditate10", "label": "Meditate 10 minutes", "points": 2 },
+        { "id": "journal15", "label": "Journal for 15 minutes", "points": 2 },
+        { "id": "walkoutside", "label": "10-minute outside walk", "points": 1 }
+      ]
+    }
+  ],
+  "difficulties": {
+    "easy":    { "minTasksPerCat": 0, "multiplier": 1 },
+    "medium":  { "minTasksPerCat": 2, "multiplier": 1 },
+    "hard":    { "minTasksPerCat": 3, "multiplier": 1 },
+    "extreme": { "minTasksPerCat": 4, "multiplier": 1 }
+  }
+}

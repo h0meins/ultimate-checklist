@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Challenge Checklist</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Challenge Checklist</h1>
+    <div class="totals">
+      <strong id="tasksDone">Tasks: 0 / 0</strong>
+      <strong id="pointsTotal">Points: 0</strong>
+    </div>
+    <div class="actions">
+      <button id="checkAll">Check all</button>
+      <button id="openSettings" aria-haspopup="dialog">⚙</button>
+    </div>
+  </header>
+
+  <main id="categories" class="grid"></main>
+
+  <!-- Settings modal -->
+  <dialog id="settings">
+    <form method="dialog" class="settings">
+      <h2>Settings</h2>
+
+      <label>
+        Mode
+        <select id="mode">
+          <option value="solo">Solo</option>
+          <option value="party">Party</option>
+          <option value="competitive">Competitive</option>
+        </select>
+      </label>
+
+      <label>
+        Difficulty
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+          <option value="extreme">Extreme</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>Exclude categories</legend>
+        <div id="excludeWrap" class="toggles"></div>
+      </fieldset>
+
+      <menu>
+        <button id="resetProgress" type="button">Reset progress</button>
+        <button value="cancel">Close</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
