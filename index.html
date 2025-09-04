@@ -8,18 +8,25 @@
 </head>
 <body>
   <header class="topbar">
-    <h1>Challenge Checklist</h1>
-    <div class="totals">
+    <h1 aria-label="Challenge Checklist">Challenge Checklist</h1>
+
+    <div class="search-wrap" role="search">
+      <input id="taskSearch" type="search" placeholder="Search tasks…" aria-label="Search tasks" />
+      <kbd title="Shortcut">/</kbd>
+    </div>
+
+    <div class="totals" aria-live="polite">
       <strong id="tasksDone">Tasks: 0 / 0</strong>
       <strong id="pointsTotal">Points: 0</strong>
     </div>
+
     <div class="actions">
-      <button id="checkAll" type="button">Check all</button>
-      <button id="openSettings" type="button" aria-haspopup="dialog">⚙</button>
+      <button id="checkAll" type="button" title="Check all visible tasks">Check all</button>
+      <button id="openSettings" type="button" aria-haspopup="dialog" title="Open settings">⚙</button>
     </div>
   </header>
 
-  <main id="categories" class="grid"></main>
+  <main id="categories" class="grid" tabindex="-1"></main>
 
   <!-- Settings -->
   <dialog id="settings">
@@ -50,12 +57,30 @@
         <div id="excludeWrap" class="toggles"></div>
       </fieldset>
 
+      <fieldset>
+        <legend>Data</legend>
+        <div class="row">
+          <button id="exportBtn" type="button">Export progress</button>
+          <label class="import-label">
+            <input id="importInput" type="file" accept="application/json" hidden />
+            <span class="buttonlike">Import progress…</span>
+          </label>
+        </div>
+      </fieldset>
+
       <menu>
         <button id="resetProgress" type="button">Reset progress</button>
         <button value="cancel">Close</button>
       </menu>
     </form>
   </dialog>
+
+  <footer class="bottombar" aria-live="polite">
+    <div class="bar-inner">
+      <progress id="globalProgress" value="0" max="100" aria-label="Overall progress"></progress>
+      <span id="globalPct">0%</span>
+    </div>
+  </footer>
 
   <script src="app.js" type="module"></script>
 </body>
